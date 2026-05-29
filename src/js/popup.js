@@ -2074,14 +2074,15 @@ async function init() {
   Object.assign(currentTab, tab);
   let url;
   try {
-    url = new URL(currentTab.url);
+    url = new URL(currentTab.url || BLANK_PAGE);
     tabURL.href = url.href || '';
   } catch (ex) {
     err(ex);
+    url = new URL(BLANK_PAGE);
   }
 
   if (url !== undefined) {
-    const hostname = formatURL(normalizedHostname(tabURL.hostname));
+    const hostname = url.href === BLANK_PAGE ? BLANK_PAGE : formatURL(normalizedHostname(tabURL.hostname));
     const response = await sendMessage({
       init: true,
       type: 'getData',
