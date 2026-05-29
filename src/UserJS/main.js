@@ -424,9 +424,10 @@ class i18nHandler {
    */
   i18n$(key) {
     const { navigator } = _self;
-    const current = navigator.language.split('-')[0] ?? 'en';
+    const lang = navigator.language.replace('-', '_');
+    const current = lang.split('_')[0] ?? 'en';
     try {
-      return i18nMap.get(current)?.[key] ?? 'Invalid Key';
+      return i18nMap.get(lang)?.[key] ?? i18nMap.get(current)?.[key] ?? i18nMap.get('en')?.[key] ?? 'Invalid Key';
     } catch (e) {
       err(e);
       return 'error';
@@ -435,7 +436,9 @@ class i18nHandler {
 
   get current() {
     const { navigator } = _self;
-    return navigator.language.split('-')[0] ?? 'en';
+    const lang = navigator.language.replace('-', '_');
+    const current = lang.split('_')[0] ?? 'en';
+    return i18nMap.has(lang) ? lang : i18nMap.has(current) ? current : 'en';
   }
 }
 const language = new i18nHandler();
