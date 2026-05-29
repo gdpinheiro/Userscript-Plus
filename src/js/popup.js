@@ -28,7 +28,7 @@ import { BaseContainer, BaseList } from './container.js';
 /**
  * @type { import("../typings/types").config }
  */
-let cfg = {};
+let cfg = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 /******************************************************************************/
 
 /**
@@ -1138,7 +1138,9 @@ ael(main, 'click', async (evt) => {
       openInTab(dataset.webpage);
     } else if (cmd === 'fullscreen') {
       const tab = container.Tabs.getActive();
-      openInTab(`${location.href}?host=${tab.dataset.host}`);
+      if (tab) {
+        openInTab(`${location.href}?host=${tab.dataset.host}`);
+      }
     } else if (cmd === 'navigation') {
       for (const e of qsA('mujs-btn', target.parentElement)) {
         if (dom.cl.has(e, 'nav')) continue;

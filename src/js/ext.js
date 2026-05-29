@@ -1,5 +1,5 @@
 export const webext =
-  self.browser instanceof Object && self.browser instanceof Element === false
+  self.browser instanceof Object && (typeof Element === 'undefined' || !(self.browser instanceof Element))
     ? self.browser
     : self.chrome;
 export const runtime = webext.runtime;

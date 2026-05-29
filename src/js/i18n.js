@@ -1,7 +1,7 @@
 'use strict';
 
 const i18n =
-  self.browser instanceof Object && self.browser instanceof Element === false
+  self.browser instanceof Object && (typeof Element === 'undefined' || !(self.browser instanceof Element))
     ? self.browser.i18n
     : self.chrome.i18n;
 
@@ -31,12 +31,15 @@ class i18nHandler {
 const { i18n$, toDate, toNumber } = i18nHandler;
 const language = { i18n$, toDate, toNumber };
 
-const isBackgroundProcess = document && document.title === 'Magic UserJS+ Background Page';
+// In a Service Worker, `document` is not defined — treat as background process to skip DOM rendering.
+const isBackgroundProcess =
+  typeof document === 'undefined' || document.title === 'Magic UserJS+ Background Page';
 
 if (isBackgroundProcess !== true) {
   // Helper to deal with the i18n'ing of HTML files.
   i18n.render = function (context) {
-    const docu = document;
+    const docu = typeof document !== 'undefined' ? document : null;
+    if (!docu) return;
     const root = context || docu;
     for (const elem of root.querySelectorAll('[data-i18n]')) {
       const text = i18n$(elem.getAttribute('data-i18n'));
